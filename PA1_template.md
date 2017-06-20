@@ -1,24 +1,25 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
+# Reproducible Research: Peer Assessment 1
 
-```{r , echo=FALSE}
-time <- format(Sys.time(), "a %b %d %X %Y")
-``` 
-by madoroi, at `r time`
+
+by madoroi, at a Jun 20 00:07:05 2017
 
 
 
 ## Loading and preprocessing the data
 
 
-```{r Data, echo=TRUE}
+
+```r
 setwd("~/Desktop/datascience/5.reproducible_research/RepData_PeerAssessment1")
 datas <- read.csv(unz("activity.zip", "activity.csv"))  
 str(datas)
+```
+
+```
+## 'data.frame':	17568 obs. of  3 variables:
+##  $ steps   : int  NA NA NA NA NA NA NA NA NA NA ...
+##  $ date    : Factor w/ 61 levels "2012-10-01","2012-10-02",..: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ interval: int  0 5 10 15 20 25 30 35 40 45 ...
 ```
 The data shows shows a dataframe with three variables and 17568 observations. 
 The variables included in this dataset are:
@@ -32,39 +33,64 @@ There are some missing values (NA) among the data.
 ## What is mean total number of steps taken per day?
 
 1. Total number of steps taken per day
-```{r , echo=TRUE}
+
+```r
 nstep <- sapply(split(datas$steps, datas$date), sum)
 ```
 
 2. Histogram of the total number of steps taken each day
-```{r , echo=TRUE}
+
+```r
 par(mar=c(4,4,2,2))
 hist(nstep, col = "green", main = "Histogram of number of steps for each day", xlab = "# steps")
 rug(nstep)
 ```
 
+![](PA1_template_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
+
 3. Calculate and report the mean and median of the total number of steps taken per day
-```{r , echo=TRUE}
+
+```r
 mean(nstep, na.rm = TRUE)
+```
+
+```
+## [1] 10766.19
+```
+
+```r
 median(nstep, na.rm = TRUE)
+```
+
+```
+## [1] 10765
 ```
 
 ## What is the average daily activity pattern?
 
 1. Each day has 288 5-minute intervals, 12 for each hour. So, all the days are split by the ID interval and is made an average of all 288 intervals across all days and a plot is performedd: 
-```{r , echo=TRUE}
+
+```r
 average_step <- sapply(split(datas$steps, datas$interval), mean, na.rm = TRUE)
 plot(average_step, type = "l",main = "Average Number of steps by 5-min interval", 
                     xlab = "5-minute interval", ylab = "average number of steps", col="blue")
-``` 
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
 
 It can be seen a higher number of steps near interval ID=100, which is near 8AM (100/12), the time to go to work, and a less activity before the rise of the sun and later night, when is time to rest and sleep. 
 
 
 2. Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
-```{r , echo=TRUE}
+
+```r
 which.max(average_step)
-``` 
+```
+
+```
+## 835 
+## 104
+```
  So, the 104th 5-minute interval has the highest number of steps (note: a day has a total of 288 5-minute interval) and 104th interval is around 8AM (indicated by the first character of 835). So 835 is the name of the 104th interval in the dataframe.
 
 
@@ -73,8 +99,13 @@ which.max(average_step)
 Note that there are a number of days/intervals where there are missing values (coded as NA).The presence of missing days may introduce bias into some calculations or summaries of the data.
 
 1. Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NAs)
-```{r , echo=TRUE}
+
+```r
 sum(is.na(datas))
+```
+
+```
+## [1] 2304
 ```
 
 
@@ -83,13 +114,15 @@ For missing values we Devise a strategy for filling in all of the missing values
 1. We Create a new dataset that is equal to the original dataset but with the missing data filled in.
 
 Copy of the original dataframe:
-```{r , echo=TRUE}
+
+```r
 datas2 <- datas  # copy the actual dataframe to be filled with estimated values for missing ones
 ```
 
 Then we create a column steps2, a copy of steps but with missing data filled in: 
 
-```{r , echo=TRUE}
+
+```r
 for (i in 1:length(datas2$steps) ) {
      
             if (is.na(datas2$steps[i]) ) {
@@ -99,27 +132,43 @@ for (i in 1:length(datas2$steps) ) {
                   datas2$steps2[i] <- datas2$steps[i]
             }
 }
-``` 
+```
 
 2. Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. 
 
 It is computed a vector with the Total number of steps taken per day. Split is used to split the data by date and apply therefore the sum by each date. 
-```{r , echo=TRUE}
+
+```r
 nstep2 <- sapply(split(datas2$steps, datas2$date), sum)
-``` 
+```
 
 Histogram of the total number of steps taken each day
-```{r , echo=TRUE}
+
+```r
  par(mfrow = c(2, 1), mar = c(4, 4, 2, 1))
  hist(nstep2, col = "green", main = "Histogram of number of steps for each day with estimations", xlab = "# steps")
  hist(nstep, col = "green", main = "Histogram of number of steps for each day", xlab = "# steps")
 ```
 
+![](PA1_template_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
+
 3. Calculate and report the mean and median of the total number of steps taken per day
-```{r , echo=TRUE}
+
+```r
 mean(nstep2, na.rm = TRUE)
+```
+
+```
+## [1] 10766.19
+```
+
+```r
 median(nstep2, na.rm = TRUE)
-``` 
+```
+
+```
+## [1] 10765
+```
 
 4. Do these values differ from the estimates from the first part of the assignment? 
 No, the values did not change because the filled in values were the average, which has no impact on the mean and median. 
@@ -134,41 +183,62 @@ The compared histogram shows that Imputing missing data ihas no impact on total 
 1. It is created a new factor variable (datas2$wDay) in the dataset with two levels – “weekday” and “weekend” indicating whether a given date is a weekday or weekend day. It is used weekdays() function for this classification. 
 
 - make the column data2$date a class date. 
-```{r , echo=TRUE}
+
+```r
 datas2$date <- as.Date(datas$date)
-``` 
+```
 
 - create a vector of weekdays (system date is in portuguese language)
-```{r , echo=TRUE}
+
+```r
 week_days <- c('Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta')
-``` 
+```
 - New variable (as a factor) with two levels, weekdays and weekend. 
-```{r , echo=TRUE}
+
+```r
 datas2$wDay <- factor( (weekdays(datas2$date ) %in% week_days), 
                    levels=c(FALSE, TRUE), labels=c('weekend', 'weekday') )
-    ``` 
+```
     
 
 2. Average number of steps taken per interval and across weekdays and weekend
 
 - Subset dataframes
-```{r , echo=TRUE}
+
+```r
 data_wday <- subset(datas2, wDay == "weekday")
 data_wend <- subset(datas2, wDay == "weekend")
-``` 
+```
 - Compute average steps for weekdays and weekend
-```{r , echo=TRUE}
+
+```r
 aver_wday <- sapply(split(data_wday$steps2, datas2$interval), mean)
+```
+
+```
+## Warning in split.default(data_wday$steps2, datas2$interval): data length is
+## not a multiple of split variable
+```
+
+```r
 aver_wend <- sapply(split(data_wend$steps2, datas2$interval), mean)
-``` 
+```
+
+```
+## Warning in split.default(data_wend$steps2, datas2$interval): data length is
+## not a multiple of split variable
+```
 
 3. Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis).
 
-```{r , echo=TRUE}
+
+```r
 par(mfrow = c(2, 1), mar = c(4, 4, 3, 1))
 plot(aver_wday, type="l", main = "weekdays", xlab = "interval", ylab = "number of steps") 
 plot(aver_wend, type="l", main = "weekend", xlab = "interval", ylab = "number of steps", col = "blue") 
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-18-1.png)<!-- -->
 
 It can be seen that for weekend this person has a more active day than weekdays. Perhaps this person has a passive job and in the working days the higher minutes are those when he moves to work (around 100-110 intervals). In the weekends he get up later but the intensity (physical movements) is much intense and he goes to bet later.  
 
