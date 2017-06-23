@@ -1,7 +1,7 @@
 # Reproducible Research: Peer Assessment 1
 
 
-by madoroi, at a Jun 20 00:07:05 2017
+by madoroi, at a Jun 22 23:56:36 2017
 
 
 
@@ -42,7 +42,7 @@ nstep <- sapply(split(datas$steps, datas$date), sum)
 
 ```r
 par(mar=c(4,4,2,2))
-hist(nstep, col = "green", main = "Histogram of number of steps for each day", xlab = "# steps")
+hist(nstep, col = "green", main = "Histogram of number of steps for each day", xlab = "# steps", breaks = 10)
 rug(nstep)
 ```
 
@@ -51,34 +51,25 @@ rug(nstep)
 3. Calculate and report the mean and median of the total number of steps taken per day
 
 ```r
-mean(nstep, na.rm = TRUE)
+mean1 <- mean(nstep, na.rm = TRUE)
+median1 <- median(nstep, na.rm = TRUE)
 ```
+The mean of total number of steps per day is 1.0766189\times 10^{4} and median equals 10765. 
 
-```
-## [1] 10766.19
-```
-
-```r
-median(nstep, na.rm = TRUE)
-```
-
-```
-## [1] 10765
-```
 
 ## What is the average daily activity pattern?
 
-1. Each day has 288 5-minute intervals, 12 for each hour. So, all the days are split by the ID interval and is made an average of all 288 intervals across all days and a plot is performedd: 
+1. Each day has 288 5-minute intervals, 12 for each hour. So, all the days are split by the ID interval and is made an average of all 288 intervals across all days and a plot is performed: 
 
 ```r
 average_step <- sapply(split(datas$steps, datas$interval), mean, na.rm = TRUE)
-plot(average_step, type = "l",main = "Average Number of steps by 5-min interval", 
+plot(names(average_step), average_step, type = "l",main = "Average Number of steps by 5-min interval", 
                     xlab = "5-minute interval", ylab = "average number of steps", col="blue")
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
 
-It can be seen a higher number of steps near interval ID=100, which is near 8AM (100/12), the time to go to work, and a less activity before the rise of the sun and later night, when is time to rest and sleep. 
+It can be seen a higher number of steps near interval  is near 8AM, the time to go to work, and a less activity before the rise of the sun and later night, when is time to rest and sleep. 
 
 
 2. Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
@@ -91,7 +82,7 @@ which.max(average_step)
 ## 835 
 ## 104
 ```
- So, the 104th 5-minute interval has the highest number of steps (note: a day has a total of 288 5-minute interval) and 104th interval is around 8AM (indicated by the first character of 835). So 835 is the name of the 104th interval in the dataframe.
+ So, the 104th 5-minute interval (labeled as 835) has the highest number of steps (note: a day has a total of 288 5-minute interval) and 104th interval is around 8AM (indicated by the first character of 835). So 835 is the name of the 104th interval in the dataframe.
 
 
 ## Imputing missing values
@@ -145,9 +136,8 @@ nstep2 <- sapply(split(datas2$steps, datas2$date), sum)
 Histogram of the total number of steps taken each day
 
 ```r
- par(mfrow = c(2, 1), mar = c(4, 4, 2, 1))
- hist(nstep2, col = "green", main = "Histogram of number of steps for each day with estimations", xlab = "# steps")
- hist(nstep, col = "green", main = "Histogram of number of steps for each day", xlab = "# steps")
+ par(mfrow = c(1, 1), mar = c(4, 4, 2, 1))
+ hist(nstep2, col = "blue", main = "Histogram of number of steps (filled values)", xlab = "# steps", breaks = 10)
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
@@ -155,20 +145,12 @@ Histogram of the total number of steps taken each day
 3. Calculate and report the mean and median of the total number of steps taken per day
 
 ```r
-mean(nstep2, na.rm = TRUE)
+mean2 <- mean(nstep2, na.rm = TRUE)
+median2 <- median(nstep2, na.rm = TRUE)
 ```
 
-```
-## [1] 10766.19
-```
+The mean of total number of steps per day is 1.0766189\times 10^{4} and median equals 10765. 
 
-```r
-median(nstep2, na.rm = TRUE)
-```
-
-```
-## [1] 10765
-```
 
 4. Do these values differ from the estimates from the first part of the assignment? 
 No, the values did not change because the filled in values were the average, which has no impact on the mean and median. 
@@ -234,13 +216,41 @@ aver_wend <- sapply(split(data_wend$steps2, datas2$interval), mean)
 
 ```r
 par(mfrow = c(2, 1), mar = c(4, 4, 3, 1))
-plot(aver_wday, type="l", main = "weekdays", xlab = "interval", ylab = "number of steps") 
-plot(aver_wend, type="l", main = "weekend", xlab = "interval", ylab = "number of steps", col = "blue") 
+plot(names(aver_wday), aver_wday, type="l", main = "weekdays", xlab = "interval", ylab = "number of steps") 
+plot(names(aver_wend), aver_wend, type="l", main = "weekend", xlab = "interval", ylab = "number of steps", col = "blue") 
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-18-1.png)<!-- -->
 
-It can be seen that for weekend this person has a more active day than weekdays. Perhaps this person has a passive job and in the working days the higher minutes are those when he moves to work (around 100-110 intervals). In the weekends he get up later but the intensity (physical movements) is much intense and he goes to bet later.  
+It can be seen that for weekend this person has a more active day than weekdays. Perhaps this person has a passive job and in the working days the higher minutes are those when he moves to work (around 8AM). In the weekends he get up later but the intensity (physical movements) is much intense and he goes to bet later.  
+
+
+```r
+sessionInfo()
+```
+
+```
+## R version 3.2.3 (2015-12-10)
+## Platform: x86_64-pc-linux-gnu (64-bit)
+## Running under: Linux Mint 18.1
+## 
+## locale:
+##  [1] LC_CTYPE=pt_PT.UTF-8       LC_NUMERIC=C              
+##  [3] LC_TIME=pt_PT.UTF-8        LC_COLLATE=pt_PT.UTF-8    
+##  [5] LC_MONETARY=pt_PT.UTF-8    LC_MESSAGES=pt_PT.UTF-8   
+##  [7] LC_PAPER=pt_PT.UTF-8       LC_NAME=C                 
+##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+## [11] LC_MEASUREMENT=pt_PT.UTF-8 LC_IDENTIFICATION=C       
+## 
+## attached base packages:
+## [1] stats     graphics  grDevices utils     datasets  methods   base     
+## 
+## loaded via a namespace (and not attached):
+##  [1] backports_1.1.0 magrittr_1.5    rprojroot_1.2   tools_3.2.3    
+##  [5] htmltools_0.3.6 yaml_2.1.14     Rcpp_0.12.10    stringi_1.1.3  
+##  [9] rmarkdown_1.5   knitr_1.16      stringr_1.2.0   digest_0.6.12  
+## [13] evaluate_0.10
+```
 
 
 
